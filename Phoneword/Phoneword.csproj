@@ -47,9 +47,13 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+    <Reference Include="Xamarin.Mobile">
+      <HintPath>..\..\Users\Kevin\Downloads\xamarin.mobile-0.7.7\xamarin.mobile-0.7.7\lib\android\Xamarin.Mobile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallHistoryActivity.cs" />
+    <Compile Include="Contacts.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="PhoneTranslator.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -59,6 +63,9 @@
     <None Include="GettingStarted.Xamarin" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
+    <AndroidResource Include="Resources\layout\Contacts.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />

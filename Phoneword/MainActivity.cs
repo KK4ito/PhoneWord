@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -6,6 +7,8 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using System.Collections.Generic;
+using Xamarin.Contacts;
+using System.Linq;
 
 namespace Phoneword
 {
@@ -13,6 +16,8 @@ namespace Phoneword
     public class MainActivity : Activity
     {
         static readonly List<string> phoneNumbers = new List<string>();
+        public static Dictionary<string, string> dictContacts = new Dictionary<string, string>();
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -27,6 +32,39 @@ namespace Phoneword
             Button translateButton = FindViewById<Button>(Resource.Id.TranslateButton);
             Button callButton = FindViewById<Button>(Resource.Id.CallButton);
             Button callHistoryButton = FindViewById<Button>(Resource.Id.CallHistoryButton);
+            Button loadContacts = FindViewById<Button>(Resource.Id.LoadContacts);
+
+            loadContacts.Click += (object sender, EventArgs e) =>
+            {
+                var book = new AddressBook(this);
+                book.RequestPermission().ContinueWith(t =>
+                {
+                    if (!t.Result)
+                    {
+                        var deniedPermission = new AlertDialog.Builder(this);
+                        deniedPermission.SetMessage("Permission denied");
+                        deniedPermission.Show();
+                        return;
+                    }
+
+                    book
+                    .OrderBy(x => x.FirstName)
+                    .ToList()
+                    .ForEach(y => dictContacts.Add($"{y.FirstName} {y.LastName}", y.Phones.First().Number));
+
+                });
+
+                var loadedSucces = new AlertDialog.Builder(this);
+                loadedSucces.SetMessage($"{book.Count()} contacts loaded!");
+                loadedSucces.SetNegativeButton("OK", delegate { });
+
+                loadedSucces.SetNeutralButton("Show me", delegate
+                {
+                    var detailsIntent = new Intent(this, typeof(Contacts));
+                    StartActivity(detailsIntent);
+                });
+                loadedSucces.Show();
+            };
 
 
             // Disable the "Call" button

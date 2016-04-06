@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.Collections;
 using System.Collections.Generic;
 using Xamarin.Contacts;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Phoneword
     public class MainActivity : Activity
     {
         static readonly List<string> phoneNumbers = new List<string>();
-        public static Dictionary<string, string> dictContacts = new Dictionary<string, string>();
-
+        public static ArrayList lstContacts = new ArrayList();
+        
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -46,21 +47,27 @@ namespace Phoneword
                         deniedPermission.Show();
                         return;
                     }
-
-                    book
-                    .OrderBy(x => x.FirstName)
-                    .ToList()
-                    .ForEach(y => dictContacts.Add($"{y.FirstName} {y.LastName}", y.Phones.First().Number));
-
                 });
 
+                var temp = book
+                            .Where(a => !String.IsNullOrEmpty(a.FirstName) && a.Phones.Count() > 0)
+                            .OrderBy(x => x.FirstName);
+
+                List<string> lstC = new List<string>();
+                foreach(Contact c in temp)
+                {
+                    if(!(lstC.Any(str => str.Contains($"{c.FirstName},{c.LastName}"))))
+                        lstC.Add($"{c.FirstName},{c.LastName},{c.Phones.First().Number}");
+                }
+                                
                 var loadedSucces = new AlertDialog.Builder(this);
-                loadedSucces.SetMessage($"{book.Count()} contacts loaded!");
+                loadedSucces.SetMessage($"{temp.Count()} contacts loaded!");
                 loadedSucces.SetNegativeButton("OK", delegate { });
 
                 loadedSucces.SetNeutralButton("Show me", delegate
                 {
-                    var detailsIntent = new Intent(this, typeof(Contacts));
+                    var detailsIntent = new Intent(this, typeof(ContactsActivity));
+                    detailsIntent.PutStringArrayListExtra("lstC", lstC);
                     StartActivity(detailsIntent);
                 });
                 loadedSucces.Show();

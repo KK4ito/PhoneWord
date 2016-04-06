@@ -53,8 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallHistoryActivity.cs" />
-    <Compile Include="Contacts.cs" />
+    <Compile Include="ContactsActivity.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MyContact.cs" />
     <Compile Include="PhoneTranslator.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
